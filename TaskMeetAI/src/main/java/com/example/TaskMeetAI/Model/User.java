@@ -1,12 +1,14 @@
 package com.example.TaskMeetAI.Model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Document(collection = "users")
 @Data
@@ -15,17 +17,42 @@ import java.util.Date;
 public class User {
 
     @Id
-    private String id;          // Mongo ObjectId as String
+    private String id;
 
-    private String fullName;
+    @Field("name")
+    private String name;
 
-    private String email;       // enforce uniqueness via repo check or index
+    @Indexed(unique = true)
+    @Field("email")
+    private String email;
 
-    private String password;
+    @Field("password")
+    private String password; // Hashed password
 
-    private String role;        // MANAGER or EMPLOYEE
+    @Field("google_id")
+    private String googleId; // For OAuth users
 
+    @Field("is_email_verified")
+    private Boolean isEmailVerified = false;
 
+    @Field("email_verification_token")
+    private String emailVerificationToken;
 
-    private Date createAt = new Date();
+    @Field("email_verification_expires")
+    private LocalDateTime emailVerificationExpires;
+
+   @Field("reset_password_token")
+    private String resetPasswordToken;
+
+    @Field("reset_password_expires")
+    private LocalDateTime resetPasswordExpires;
+
+    @Field("created_at")
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Field("updated_at")
+    private LocalDateTime updatedAt = LocalDateTime.now();
+
+    @Field("roles")
+    private String role = "USER"; // Default role
 }
